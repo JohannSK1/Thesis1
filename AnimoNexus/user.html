@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AnimoNexus – Information Repository</title>
+  <link rel="icon" type="image/x-icon" href="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root{
+      --green:#006633;
+      --green-light:#007a33;
+      --green-lighter:#00cc66;
+      --page-bg:#e6f2e6;
+    }
+
+    body{
+      margin:0;font-family:Arial,Helvetica,sans-serif;
+      background:var(--page-bg);color:#004d00;
+      display:flex;flex-direction:column;min-height:100vh;
+    }
+
+    /* header */
+    .page-heading{
+      background:var(--green);color:#fff;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:15px 90px 15px 100px;
+    }
+    .branding{display:flex;align-items:center;gap:14px}
+    .branding img.logo{height:48px;filter:invert(1);}   /* WHITE logo */
+    .branding h1{margin:0;font-size:2rem;font-weight:bold}
+
+    .home-btn{
+      background:linear-gradient(to right,var(--green-light),var(--green-lighter));
+      border:none;border-radius:5px;color:#fff;font-weight:bold;
+      padding:8px 30px;font-size:1rem;text-decoration:none;transition:.2s;
+    }
+    .home-btn:hover{box-shadow:0 0 10px var(--green-lighter)}
+
+    /* main content wrapper */
+    .container{padding:40px 8%;flex:1;}
+
+    /* form styling */
+    form{background:#fff;border:1px solid #ccc;border-radius:8px;padding:30px;max-width:700px}
+    .form-group{margin-bottom:18px}
+    label{display:block;margin-bottom:6px}
+    select,input[type="text"],input[type="date"]{
+      width:100%;padding:8px;border:1px solid #999;border-radius:4px;
+    }
+    button[type="submit"]{
+      background:var(--green-light);color:#fff;font-weight:bold;
+      border:none;border-radius:5px;padding:10px 26px;cursor:pointer;transition:.15s;
+    }
+    button[type="submit"]:hover{background:var(--green)}
+    #options{height:120px} /* taller multi-select */
+  </style>
+</head>
+
+<body>
+  <!-- header -->
+  <header class="page-heading">
+    <div class="branding">
+      <img src="static/images/animonexus_logo.png" alt="AnimoNexus logo" class="logo">
+      <h1>AnimoNexus</h1>
+    </div>
+    <a href="index.php" class="home-btn">Home</a>
+  </header>
+
+  <!-- main -->
+  <div class="container">
+    <h2>Information Repository</h2>
+
+    <!-- existing form (unchanged) -->
+    <form action="manage_papers.php" method="POST" id="optionForm">
+      <div class="form-group">
+        <label for="departments">Choose a department:</label>
+        <select id="departments" name="department">
+          <option value="AIML">AIML</option><option value="CSE">CSE</option>
+          <option value="ISE">ISE</option><option value="EC">EC</option>
+          <option value="MECH">MECH</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="options">Choose options:</label>
+        <select id="options" name="selected_options[]" multiple>
+          <option value="Journal">Journal</option>
+          <option value="Conference">Conference</option>
+          <option value="BookChapter">Book Chapter</option>
+          <option value="FundedResearchProject">Funded Research Project</option>
+          <option value="ResearchProposalSubmitted">Research Proposal Submitted</option>
+          <option value="Consultancy">Consultancy</option>
+          <option value="ProductDevelopment">Product Development</option>
+          <option value="Patent">Patent</option>
+          <option value="FDPWorkshopSeminarAttendedByFaculty">FDP/Workshop/Seminar Attended by Faculty</option>
+          <option value="MOUCS">MOUCS / Swayam / Coursera</option>
+          <option value="AchievementsAndAwards">Achievements and Awards</option>
+          <option value="MOUS">MOUS</option>
+          <option value="FundedStudentProject">Funded Student Project</option>
+        </select>
+      </div>
+
+      <div id="textFields"></div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <!-- original JS (unchanged) -->
+  <script>
+    document.getElementById('options').addEventListener('change', function () {
+      var selectedOptions = this.selectedOptions;
+      var textFields = document.getElementById('textFields');
+      textFields.innerHTML = '';
+
+      for (var i = 0; i < selectedOptions.length; i++) {
+        var option = selectedOptions[i].value;
+        var optionFields = getOptionFields(option);
+        textFields.appendChild(optionFields);
+      }
+    });
+
+    function getOptionFields(option) {
+      var optionFields = document.createElement('div');
+      optionFields.classList.add('form-group');
+
+      var optionData = {
+        'Journal': ['Year of publication','Authors','Title','Journal name','Volume and page number','ISSN','Impact factor'],
+        'Conference': ['Year of publication','Authors','Title','Conference Name','Volume and page count','Organized by','Place of conference'],
+        'BookChapter': ['Year of publication','Authors','Chapter title','Book title','Publisher','ISSN'],
+        'FundedResearchProject': ['Year sanctioned','Principal investigation','COPI','Title of the project','Funding Agencies','Amount RS','Status'],
+        'ResearchProposalSubmitted': ['Date of sanction','Principal investigation','COPI','Title','Funding Agencies','Amount applied','Status'],
+        'Consultancy': ['Amount Sanctioned','Principal investigation','COPI','Title','Agency','Year','Type'],
+        'ProductDevelopment': ['Product Type','Product Description','Area of application','Sponsoring/Funding agency','Faculty Name/Mentor name','Student name','Status'],
+        'Patent': ['Year of publication','Principal investigation','Patent number','Title','Indian/international','Status'],
+        'FDPWorkshopSeminarAttendedByFaculty': ['Date','Topic','Duration','Dept','Coordination','Organizer','Faculty Name'],
+        'MOUCS': ['Date','Major area','Topic','Duration','Certified by','Faculty Name/USN','Student Name/USN'],
+        'AchievementsAndAwards': ['Date','Event name','Organizer','Mentor name','Names of the faculty','Type of participation','Outcomes'],
+        'MOUS': ['Date','Duration','Name of the organization','Type of MOU','Outcomes','Faculty incharge'],
+        'FundedStudentProject': ['Year sanctioned','Supervison','Cosupervision','Student Name','Title of the project','Funding Agencies','Amount','Status']
+      };
+
+      optionData[option].forEach(function(field){
+        var label=document.createElement('label');label.textContent=field+': ';optionFields.appendChild(label);
+
+        if(field==='Date'||field==='Date of sanction'){
+          var input=document.createElement('input');input.type='date';input.name=option+'-'+field;optionFields.appendChild(input);
+        }else if(field==='Year of publication'||field==='Year sanctioned'){
+          var select=document.createElement('select');select.name=option+'-'+field;
+          var yearNow=new Date().getFullYear();
+          for(var y=yearNow;y>=1900;y--){
+            var opt=document.createElement('option');opt.value=y;opt.textContent=y;select.appendChild(opt);
+          }
+          optionFields.appendChild(select);
+        }else{
+          var input=document.createElement('input');input.type='text';input.name=option+'-'+field;optionFields.appendChild(input);
+        }
+        optionFields.appendChild(document.createElement('br'));
+      });
+      return optionFields;
+    }
+
+    function displayAlert(){alert("Information inserted successfully!");}
+    document.getElementById('optionForm').addEventListener('submit',function(e){
+      e.preventDefault();displayAlert();this.submit();
+    });
+  </script>
+</body>
+</html>

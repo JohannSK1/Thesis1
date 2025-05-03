@@ -1,0 +1,13 @@
+PASS: All checks passed.
+PASS: Abstract header present and >100 words.
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\AnimoNexus/check_papers.py", line 92, in <module>
+    main()
+    ~~~~^^
+  File "C:\xampp\htdocs\AnimoNexus/check_papers.py", line 89, in main
+    print(line)
+    ~~~~~^^^^^^
+  File "C:\Users\jiket\AppData\Local\Programs\Python\Python313\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2265' in position 17: character maps to <undefined>
